@@ -1,0 +1,231 @@
+@import "tailwindcss";
+
+/* Enable class-based dark mode for Tailwind dark: utilities */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Toast slide-in ── */
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(100%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.animate-in { animation: slide-in 0.2s ease-out; }
+
+/* ── Scroll-reveal base ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s cubic-bezier(.16,1,.3,1), transform 0.6s cubic-bezier(.16,1,.3,1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Hero entrance (runs on mount, no IntersectionObserver needed) ── */
+@keyframes hero-fade-up {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-anim {
+  opacity: 0;
+  animation: hero-fade-up 0.7s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+@keyframes hero-scale-in {
+  from { opacity: 0; transform: scale(0.75); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.hero-avatar {
+  opacity: 0;
+  animation: hero-scale-in 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+
+/* ── Stagger delays ── */
+.delay-0   { animation-delay: 0ms; }
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* ── Skill bar fill ── */
+.skill-bar {
+  width: 0;
+  transition: width 1s cubic-bezier(.16,1,.3,1);
+  background: linear-gradient(90deg, #00A76F, #00B8D9);
+}
+.skill-bar.filled { width: var(--target-w); }
+
+/* ── Card hover lift ── */
+.card-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px -8px rgba(0,167,111,0.25), 0 0 0 1px rgba(0,167,111,0.2);
+}
+.dark .card-lift:hover {
+  box-shadow: 0 16px 40px -8px rgba(0,167,111,0.35), 0 0 0 1px rgba(0,167,111,0.25);
+}
+
+/* ── Neon / float animations ── */
+@keyframes neon-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,167,111,0.3); }
+  50% { box-shadow: 0 0 40px rgba(0,167,111,0.6), 0 0 60px rgba(0,167,111,0.3); }
+}
+@keyframes neon-glow-cyan {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,184,217,0.3); }
+  50% { box-shadow: 0 0 40px rgba(0,184,217,0.6); }
+}
+@keyframes float-subtle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.neon-glow { animation: neon-glow 3s ease-in-out infinite; }
+.neon-glow-cyan { animation: neon-glow-cyan 3s ease-in-out infinite; }
+.float-anim { animation: float-subtle 3s ease-in-out infinite; }
+
+:root {
+  --accent: #00A76F;
+  --accent-cyan: #00B8D9;
+  --bg: #161C24;
+  --bg-card: #212B36;
+  --border: rgba(0, 167, 111, 0.2);
+  --text: #919EAB;
+  --text-h: #FFFFFF;
+  --code-bg: #212B36;
+  --shadow:
+    rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+.dark {
+  color-scheme: dark;
+  --accent: #00A76F;
+  --accent-cyan: #00B8D9;
+  --bg: #161C24;
+  --bg-card: #212B36;
+  --border: rgba(0, 167, 111, 0.2);
+  --text: #919EAB;
+  --text-h: #FFFFFF;
+  --code-bg: #212B36;
+  --shadow:
+    rgba(0, 0, 0, 0.5) 0 10px 15px -3px, rgba(0, 0, 0, 0.3) 0 4px 6px -2px;
+}
+
+.dark #social .button-icon {
+  filter: invert(1) brightness(2);
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2 {
+  font-family: var(--heading);
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+h1 {
+  font-size: 56px;
+  letter-spacing: -1.68px;
+  margin: 32px 0;
+  @media (max-width: 1024px) {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+}
+
+h2 {
+  font-size: 24px;
+  line-height: 118%;
+  letter-spacing: -0.24px;
+  margin: 0 0 8px;
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
+}
+
+p {
+  margin: 0;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 15px;
+  line-height: 135%;
+  padding: 4px 8px;
+  background: var(--code-bg);
+  display: inline-flex;
+  border-radius: 4px;
+  color: var(--text-h);
+}
+
+/* ── Bio HTML rendering (Welcome page) ── */
+.prose-bio p  { margin: 0 0 0.5em; }
+.prose-bio ul,
+.prose-bio ol { padding-left: 1.5em; margin: 0.4em 0; text-align: left; display: inline-block; }
+.prose-bio li { margin: 0.2em 0; }
+.prose-bio strong { color: #FFFFFF; }
+.prose-bio em { color: #00B8D9; font-style: italic; }
+.prose-bio a { color: #00A76F; text-decoration: underline; }
+.prose-bio code { font-family: monospace; font-size: 0.85em; background: rgba(0,167,111,0.1); border-radius: 3px; padding: 1px 5px; color: #00A76F; }
+.prose-bio blockquote { border-left: 3px solid #00A76F; padding-left: 0.75em; opacity: 0.8; margin: 0.5em auto; text-align: left; display: inline-block; }
+
+/* ── TipTap Rich Editor ── */
+.rich-editor:focus-within { outline: none; }
+.rich-editor .tiptap { outline: none; min-height: 120px; }
+.rich-editor .tiptap p { margin: 0 0 0.5em; }
+.rich-editor .tiptap h2 { font-size: 1.25em; font-weight: 700; margin: 0.75em 0 0.25em; }
+.rich-editor .tiptap h3 { font-size: 1.1em; font-weight: 600; margin: 0.75em 0 0.25em; }
+.rich-editor .tiptap ul,
+.rich-editor .tiptap ol  { padding-left: 1.5em; margin: 0.4em 0; }
+.rich-editor .tiptap li  { margin: 0.2em 0; }
+.rich-editor .tiptap blockquote {
+  border-left: 3px solid #7c3aed;
+  padding-left: 0.75em;
+  color: #6b7280;
+  margin: 0.5em 0;
+}
+.rich-editor .tiptap code {
+  font-size: 0.85em;
+  background: #f3f4f6;
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+.dark .rich-editor .tiptap code { background: #374151; }
+.rich-editor .tiptap a { color: #7c3aed; text-decoration: underline; }
+.rich-editor .tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+}
