@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CertificationController;
 use App\Http\Controllers\Api\EducationController;
 use App\Http\Controllers\Api\ExperienceController;
 use App\Http\Controllers\Api\PortfolioController;
@@ -29,6 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/portfolio/experiences', ExperienceController::class)->except('index', 'show');
     Route::post('/portfolio/educations/reorder', [EducationController::class, 'reorder']);
     Route::apiResource('/portfolio/educations', EducationController::class)->except('index', 'show');
+    Route::post('/portfolio/certifications/reorder', [CertificationController::class, 'reorder']);
+    Route::apiResource('/portfolio/certifications', CertificationController::class)->except('index', 'show');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

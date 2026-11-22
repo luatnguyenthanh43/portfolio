@@ -12,7 +12,7 @@ class PasswordResetEmailTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_reset_email_links_to_frontend(): void
+    public function testResetEmailLinksToFrontend(): void
     {
         Notification::fake();
         $user = User::factory()->create();

@@ -19,6 +19,9 @@ class ProjectController extends Controller
     {
         return [
             'title' => 'required|string|max:255',
+            'company' => 'nullable|string|max:255',
+            'role' => 'nullable|string|max:255',
+            'summary' => 'nullable|string|max:300',
             'description' => 'nullable|string',
             'tech_stack' => 'nullable|array',
             'tech_stack.*' => 'string|max:100',
@@ -38,6 +41,7 @@ class ProjectController extends Controller
         if (array_key_exists('description', $data)) {
             $data['description'] = HtmlSanitizer::purify($data['description'] ?? '');
         }
+
         return $data;
     }
 

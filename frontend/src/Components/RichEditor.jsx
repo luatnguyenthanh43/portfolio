@@ -1,14 +1,12 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import Underline from '@tiptap/extension-underline'
-import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import { useEffect } from 'react'
 
 const btnCls = (active) =>
     `px-2 py-1 rounded text-xs font-medium transition-colors ${
         active
-            ? 'bg-violet-600 text-white'
+            ? 'bg-accent-600 text-white'
             : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
     }`
 
@@ -23,9 +21,8 @@ function ToolbarBtn({ onClick, active = false, title, children }) {
 export default function RichEditor({ value, onChange, placeholder = 'Write something…' }) {
     const editor = useEditor({
         extensions: [
-            StarterKit,
-            Underline,
-            Link.configure({ openOnClick: false }),
+            // StarterKit v3 already bundles Link and Underline
+            StarterKit.configure({ link: { openOnClick: false } }),
             Placeholder.configure({ placeholder }),
         ],
         content: value || '',
@@ -36,9 +33,9 @@ export default function RichEditor({ value, onChange, placeholder = 'Write somet
 
     // sync external value changes (e.g. on reset)
     useEffect(() => {
-        if (!editor) return
+        if (!editor || !editor.isInitialized) return
         if (editor.getHTML() !== value) {
-            editor.commands.setContent(value || '', false)
+            editor.commands.setContent(value || '', { emitUpdate: false })
         }
     }, [value, editor])
 

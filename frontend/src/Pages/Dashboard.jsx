@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import RichEditor from '@/Components/RichEditor'
 import { useToast } from '@/hooks/useToast'
 import api from '@/lib/api'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 
 // ── Date helpers (date picker ↔ display) ──────────────────────────────────────
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -47,16 +47,16 @@ const fmtMonth = fmtDate
 
 // ─── Shared helpers ────────────────────────────────────────────────────────────
 
-const inputCls = 'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100'
-const btnPrimary = 'rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-700 disabled:opacity-50 transition'
-const btnSecondary = 'rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition'
+const inputCls = 'w-full rounded-md border border-gray-400 bg-white px-3 py-2 text-sm text-gray-900 focus:border-accent-500 focus:outline-none focus:ring-1 focus:ring-accent-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100'
+const btnPrimary = 'rounded-md bg-accent-600 px-4 py-2 text-sm font-medium text-white hover:bg-accent-700 disabled:opacity-50 transition'
+const btnSecondary = 'rounded-md border border-gray-400 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition'
 const btnDanger = 'rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700 transition'
-const btnEdit = 'rounded-md bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition'
+const btnEdit = 'rounded-md bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition'
 
 function Field({ label, children }) {
     return (
         <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
+            <label className="mb-1 block text-sm font-medium text-gray-800 dark:text-gray-300">{label}</label>
             {children}
         </div>
     )
@@ -113,10 +113,7 @@ function ProfileTab() {
 
 // ─── Projects Tab ──────────────────────────────────────────────────────────────
 
-const emptyProject = { title: '', description: '', tech_stack: [], image_url: '', demo_url: '', github_url: '', status: 'Completed', featured: false, category: '', year: '', order: 0 }
-
-const PROJECT_STATUSES = ['Completed', 'In Progress', 'Archived']
-const PROJECT_CATEGORIES = ['Web', 'Mobile', 'API', 'CLI', 'Library', 'Other']
+const emptyProject = { title: '', company: '', role: '', summary: '', description: '', image_url: '', demo_url: '', github_url: '', tech_stack: [] }
 
 function ProjectForm({ initial, onSave, onCancel }) {
     const [form, setForm] = useState({
@@ -142,30 +139,24 @@ function ProjectForm({ initial, onSave, onCancel }) {
     }
 
     return (
-        <form onSubmit={submit} className="rounded-lg border border-violet-200 bg-violet-50 p-4 dark:border-violet-800 dark:bg-violet-950">
+        <form onSubmit={submit} className="rounded-lg border border-accent-200 bg-accent-50 p-4 dark:border-accent-800 dark:bg-accent-950">
             <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="Title *"><input className={inputCls} value={form.title} onChange={e => set('title', e.target.value)} required /></Field>
-                <Field label="Category">
-                    <select className={inputCls} value={form.category} onChange={e => set('category', e.target.value)}>
-                        <option value="">— Select —</option>
-                        {PROJECT_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                </Field>
-                <Field label="Status">
-                    <select className={inputCls} value={form.status} onChange={e => set('status', e.target.value)}>
-                        {PROJECT_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                </Field>
-                <Field label="Year"><input className={inputCls} placeholder="e.g. 2024" value={form.year} onChange={e => set('year', e.target.value)} /></Field>
+                <Field label="Company"><input className={inputCls} placeholder="e.g. Keyloop" value={form.company ?? ''} onChange={e => set('company', e.target.value)} /></Field>
+                <Field label="Role"><input className={inputCls} placeholder="e.g. Software Engineer" value={form.role ?? ''} onChange={e => set('role', e.target.value)} /></Field>
+                <div className="sm:col-span-2">
+                    <Field label="Summary (one line, max 300 chars)"><input className={inputCls} maxLength={300} value={form.summary ?? ''} onChange={e => set('summary', e.target.value)} /></Field>
+                </div>
+                <Field label="Live demo URL"><input className={inputCls} type="url" value={form.demo_url ?? ''} onChange={e => set('demo_url', e.target.value)} /></Field>
+                <Field label="Source code URL"><input className={inputCls} type="url" value={form.github_url ?? ''} onChange={e => set('github_url', e.target.value)} /></Field>
+                <div className="sm:col-span-2">
+                    <Field label="Image URL"><input className={inputCls} type="url" value={form.image_url ?? ''} onChange={e => set('image_url', e.target.value)} /></Field>
+                </div>
                 <div className="sm:col-span-2">
                     <Field label="Description">
                         <RichEditor value={form.description} onChange={v => set('description', v)} placeholder="Describe this…" />
                     </Field>
                 </div>
-                <Field label="Demo URL"><input className={inputCls} value={form.demo_url} onChange={e => set('demo_url', e.target.value)} /></Field>
-                <Field label="GitHub URL"><input className={inputCls} value={form.github_url} onChange={e => set('github_url', e.target.value)} /></Field>
-                <Field label="Image URL"><input className={inputCls} value={form.image_url} onChange={e => set('image_url', e.target.value)} /></Field>
-                <Field label="Order"><input className={inputCls} type="number" value={form.order} onChange={e => set('order', parseInt(e.target.value) || 0)} /></Field>
                 <div className="sm:col-span-2">
                     <Field label="Tech Stack (press Enter to add)">
                         <input
@@ -178,7 +169,7 @@ function ProjectForm({ initial, onSave, onCancel }) {
                         {form.tech_stack.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-1">
                                 {form.tech_stack.map(t => (
-                                    <span key={t} className="flex items-center gap-1 rounded-full bg-violet-100 px-2 py-0.5 text-xs text-violet-700 dark:bg-violet-900 dark:text-violet-300">
+                                    <span key={t} className="flex items-center gap-1 rounded-full bg-accent-100 px-2 py-0.5 text-xs text-accent-700 dark:bg-accent-900 dark:text-accent-300">
                                         {t}
                                         <button type="button" onClick={() => removeTech(t)} className="hover:text-red-500">✕</button>
                                     </span>
@@ -186,10 +177,6 @@ function ProjectForm({ initial, onSave, onCancel }) {
                             </div>
                         )}
                     </Field>
-                </div>
-                <div className="sm:col-span-2 flex items-center gap-2">
-                    <input type="checkbox" id="featured" checked={form.featured} onChange={e => set('featured', e.target.checked)} className="h-4 w-4 accent-violet-600" />
-                    <label htmlFor="featured" className="text-sm text-gray-700 dark:text-gray-300">Featured project</label>
                 </div>
             </div>
             <div className="mt-3 flex gap-2">
@@ -247,10 +234,10 @@ function ProjectsTab() {
                     <div key={item.id} className="flex items-start justify-between rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
                         <div>
                             <p className="font-medium text-gray-900 dark:text-white">{item.title}</p>
-                            {item.description && <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 line-clamp-1">{item.description}</p>}
+                            {item.description && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 line-clamp-1">{item.description}</p>}
                             {item.tech_stack?.length > 0 && (
                                 <div className="mt-2 flex flex-wrap gap-1">
-                                    {item.tech_stack.map(t => <span key={t} className="rounded bg-violet-100 px-2 py-0.5 text-xs text-violet-700 dark:bg-violet-900 dark:text-violet-300">{t}</span>)}
+                                    {item.tech_stack.map(t => <span key={t} className="rounded bg-accent-100 px-2 py-0.5 text-xs text-accent-700 dark:bg-accent-900 dark:text-accent-300">{t}</span>)}
                                 </div>
                             )}
                         </div>
@@ -260,7 +247,7 @@ function ProjectsTab() {
                         </div>
                     </div>
                 ))}
-                {items.length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400">No projects yet.</p>}
+                {items.length === 0 && <p className="text-sm text-gray-600 dark:text-gray-400">No projects yet.</p>}
             </div>
         </div>
     )
@@ -268,7 +255,7 @@ function ProjectsTab() {
 
 // ─── Skills Tab ────────────────────────────────────────────────────────────────
 
-const emptySkill = { name: '', category: '', level: 80, order: 0 }
+const emptySkill = { name: '', category: '', order: 0 }
 
 function SkillForm({ initial, onSave, onCancel }) {
     const [form, setForm] = useState({ ...emptySkill, ...initial })
@@ -282,11 +269,10 @@ function SkillForm({ initial, onSave, onCancel }) {
     }
 
     return (
-        <form onSubmit={submit} className="rounded-lg border border-violet-200 bg-violet-50 p-4 dark:border-violet-800 dark:bg-violet-950">
-            <div className="grid gap-3 sm:grid-cols-4">
+        <form onSubmit={submit} className="rounded-lg border border-accent-200 bg-accent-50 p-4 dark:border-accent-800 dark:bg-accent-950">
+            <div className="grid gap-3 sm:grid-cols-3">
                 <Field label="Name *"><input className={inputCls} value={form.name} onChange={e => set('name', e.target.value)} required /></Field>
                 <Field label="Category"><input className={inputCls} value={form.category} onChange={e => set('category', e.target.value)} placeholder="Frontend" /></Field>
-                <Field label="Level (0–100)"><input className={inputCls} type="number" min={0} max={100} value={form.level} onChange={e => set('level', parseInt(e.target.value) || 0)} /></Field>
                 <Field label="Order"><input className={inputCls} type="number" value={form.order} onChange={e => set('order', parseInt(e.target.value) || 0)} /></Field>
             </div>
             <div className="mt-3 flex gap-2">
@@ -344,7 +330,7 @@ function SkillsTab() {
         <div className="space-y-4">
             <div className="flex items-center gap-3">
                 {!adding && <button className={btnPrimary} onClick={() => setAdding(true)}>+ Add Skill</button>}
-                {items.length > 1 && <span className="text-xs text-gray-400 dark:text-gray-500">Drag to reorder</span>}
+                {items.length > 1 && <span className="text-xs text-gray-500 dark:text-gray-500">Drag to reorder</span>}
             </div>
             {adding && <SkillForm initial={emptySkill} onSave={handleAdd} onCancel={() => setAdding(false)} />}
             <div className="space-y-2">
@@ -356,25 +342,21 @@ function SkillsTab() {
                         onDragOver={e => handleDragOver(e, i)}
                         onDragEnd={handleDragEnd}
                         onDrop={() => handleDrop(i)}
-                        className={`rounded-lg border bg-white p-3 dark:bg-gray-800 transition-colors ${dragOver === i ? 'border-violet-400 bg-violet-50 dark:bg-violet-900/20' : 'border-gray-200 dark:border-gray-700'}`}
+                        className={`rounded-lg border bg-white p-3 dark:bg-gray-800 transition-colors ${dragOver === i ? 'border-accent-400 bg-accent-50 dark:bg-accent-900/20' : 'border-gray-200 dark:border-gray-700'}`}
                     >
                         {editId === item.id ? (
                             <SkillForm initial={item} onSave={p => handleUpdate(item.id, p)} onCancel={() => setEditId(null)} />
                         ) : (
                             <div className="flex items-center gap-3">
-                                <span className="cursor-grab text-gray-300 dark:text-gray-600 hover:text-gray-400"><GripIcon /></span>
+                                <span className="cursor-grab text-gray-400 dark:text-gray-600 hover:text-gray-400"><GripIcon /></span>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between gap-2 mb-1.5">
                                         <div className="flex items-center gap-2 min-w-0">
                                             <span className="font-medium text-gray-900 dark:text-white truncate">{item.name}</span>
                                             {item.category && (
-                                                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500 dark:bg-gray-700 dark:text-gray-400 shrink-0">{item.category}</span>
+                                                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-400 shrink-0">{item.category}</span>
                                             )}
                                         </div>
-                                        <span className="text-xs font-mono text-violet-600 dark:text-violet-400 shrink-0">{item.level}%</span>
-                                    </div>
-                                    <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
-                                        <div className="h-1.5 rounded-full bg-gradient-to-r from-violet-500 to-violet-400 transition-all" style={{ width: `${item.level}%` }} />
                                     </div>
                                 </div>
                                 <div className="flex gap-2 shrink-0">
@@ -385,7 +367,7 @@ function SkillsTab() {
                         )}
                     </div>
                 ))}
-                {items.length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400">No skills yet.</p>}
+                {items.length === 0 && <p className="text-sm text-gray-600 dark:text-gray-400">No skills yet.</p>}
             </div>
         </div>
     )
@@ -428,7 +410,7 @@ function TechPicker({ selected, onChange }) {
                         <button
                             key={t} type="button"
                             onClick={() => toggle(t)}
-                            className="flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors bg-violet-600 text-white hover:bg-violet-700"
+                            className="flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors bg-accent-600 text-white hover:bg-accent-700"
                         >
                             {t} <span className="opacity-70">✕</span>
                         </button>
@@ -441,7 +423,7 @@ function TechPicker({ selected, onChange }) {
                     <button
                         key={t} type="button"
                         onClick={() => toggle(t)}
-                        className="rounded-full border border-gray-300 bg-white px-2.5 py-0.5 text-xs font-medium text-gray-600 transition-colors hover:border-violet-400 hover:bg-violet-50 hover:text-violet-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:border-violet-500 dark:hover:text-violet-400"
+                        className="rounded-full border border-gray-400 bg-white px-2.5 py-0.5 text-xs font-medium text-gray-700 transition-colors hover:border-accent-400 hover:bg-accent-50 hover:text-accent-700 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:border-accent-500 dark:hover:text-accent-400"
                     >
                         + {t}
                     </button>
@@ -491,17 +473,17 @@ function ExpForm({ initial, onSave, onCancel }) {
     }
 
     return (
-        <form onSubmit={submit} className="rounded-lg border border-violet-200 bg-violet-50 p-4 dark:border-violet-800 dark:bg-violet-950">
+        <form onSubmit={submit} className="rounded-lg border border-accent-200 bg-accent-50 p-4 dark:border-accent-800 dark:bg-accent-950">
             <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="Company *"><input className={inputCls} value={form.company} onChange={e => set('company', e.target.value)} required /></Field>
                 <Field label="Role *"><input className={inputCls} value={form.role} onChange={e => set('role', e.target.value)} required /></Field>
-                <Field label="Start Date *">
-                    <input className={inputCls} type="date" value={form.start_date} onChange={e => set('start_date', e.target.value)} required />
+                <Field label="Start Date">
+                    <input className={inputCls} type="date" value={form.start_date} onChange={e => set('start_date', e.target.value)} />
                 </Field>
                 <Field label="End Date (blank = Present)">
                     <input className={inputCls} type="date" value={form.end_date} onChange={e => set('end_date', e.target.value)} />
                     {form.end_date && (
-                        <button type="button" onClick={() => set('end_date', '')} className="mt-1 text-xs text-gray-400 hover:text-red-500">
+                        <button type="button" onClick={() => set('end_date', '')} className="mt-1 text-xs text-gray-500 hover:text-red-500">
                             ✕ Clear (set to Present)
                         </button>
                     )}
@@ -539,8 +521,8 @@ function ExpForm({ initial, onSave, onCancel }) {
                                 {form.key_achievements.map((a, i) => (
                                     <li key={i} className="flex items-start gap-2 rounded-md bg-green-50 px-3 py-1.5 text-sm dark:bg-green-900/20">
                                         <span className="mt-0.5 text-green-500">✦</span>
-                                        <span className="flex-1 text-gray-700 dark:text-gray-300">{a}</span>
-                                        <button type="button" onClick={() => removeAchievement(i)} className="text-gray-400 hover:text-red-500">✕</button>
+                                        <span className="flex-1 text-gray-800 dark:text-gray-300">{a}</span>
+                                        <button type="button" onClick={() => removeAchievement(i)} className="text-gray-500 hover:text-red-500">✕</button>
                                     </li>
                                 ))}
                             </ul>
@@ -619,7 +601,7 @@ function ExperienceTab() {
             <div className="flex items-center gap-3">
                 {!adding && <button className={btnPrimary} onClick={() => setAdding(true)}>+ Add Experience</button>}
                 {items.length > 1 && !adding && (
-                    <span className="text-xs text-gray-400 dark:text-gray-500">Drag rows to reorder</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-500">Drag rows to reorder</span>
                 )}
             </div>
             {adding && <ExpForm initial={emptyExp} onSave={handleAdd} onCancel={() => setAdding(false)} />}
@@ -636,22 +618,22 @@ function ExperienceTab() {
                         onDragEnd={handleDragEnd}
                         className={`flex cursor-grab items-start rounded-lg border bg-white p-4 transition-all active:cursor-grabbing dark:bg-gray-800 ${
                             dragOver === i
-                                ? 'border-violet-400 shadow-md shadow-violet-100 dark:border-violet-500 dark:shadow-violet-900/50'
+                                ? 'border-accent-400 shadow-md shadow-accent-100 dark:border-accent-500 dark:shadow-accent-900/50'
                                 : 'border-gray-200 dark:border-gray-700'
                         }`}
                     >
                         {/* grip handle */}
-                        <div className="mr-3 mt-1 shrink-0 text-gray-300 dark:text-gray-600">
+                        <div className="mr-3 mt-1 shrink-0 text-gray-400 dark:text-gray-600">
                             <GripIcon />
                         </div>
                         <div className="flex-1">
                             <p className="font-medium text-gray-900 dark:text-white">
-                                {item.role} <span className="font-normal text-violet-600 dark:text-violet-400">@ {item.company}</span>
+                                {item.role} <span className="font-normal text-accent-600 dark:text-accent-400">@ {item.company}</span>
                             </p>
-                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                {fmtMonth(item.start_date)} — {item.end_date ? fmtMonth(item.end_date) : 'Present'}
+                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                {item.start_date ? `${fmtMonth(item.start_date)} — ${item.end_date ? fmtMonth(item.end_date) : 'Present'}` : item.end_date ? fmtMonth(item.end_date) : 'No dates'}
                             </p>
-                            {item.description && <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{item.description}</p>}
+                            {item.description && <p className="mt-2 text-sm text-gray-700 dark:text-gray-400">{item.description}</p>}
                         </div>
                         <div className="ml-4 flex shrink-0 gap-2">
                             <button className={btnEdit} onClick={() => setEditId(item.id)}>Edit</button>
@@ -659,7 +641,7 @@ function ExperienceTab() {
                         </div>
                     </div>
                 ))}
-                {items.length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400">No experiences yet.</p>}
+                {items.length === 0 && <p className="text-sm text-gray-600 dark:text-gray-400">No experiences yet.</p>}
             </div>
         </div>
     )
@@ -669,7 +651,68 @@ function ExperienceTab() {
 
 const emptyEdu = { institution: '', degree: '', field_of_study: '', start_date: '', end_date: '', description: '', gpa: '', order: 0 }
 
-function EduForm({ initial, onSave, onCancel }) {
+const DEGREE_SUGGESTIONS = [
+    'High School Diploma',
+    'Associate Degree',
+    'Bachelor of Science',
+    'Bachelor of Engineering',
+    'Bachelor of Arts',
+    'Bachelor of Business Administration',
+    'Master of Science',
+    'Master of Engineering',
+    'Master of Business Administration',
+    'Master of Arts',
+    'Doctor of Philosophy (PhD)',
+    'Professional Certificate',
+    'Bootcamp Certificate',
+    'Online Course',
+]
+
+const INSTITUTION_SUGGESTIONS = [
+    'Hanoi University of Science and Technology',
+    'Vietnam National University, Hanoi',
+    'Vietnam National University, Ho Chi Minh City',
+    'Ho Chi Minh City University of Technology',
+    'FPT University',
+    'Posts and Telecommunications Institute of Technology',
+    'Ton Duc Thang University',
+    'RMIT University Vietnam',
+    'Massachusetts Institute of Technology',
+    'Stanford University',
+    'National University of Singapore',
+    'University of Melbourne',
+    'Coursera',
+    'Udemy',
+    'freeCodeCamp',
+]
+
+// Text input with a suggestion dropdown (native datalist). Any value can still be typed freely.
+function SuggestInput({ options, ...props }) {
+    const listId = useId()
+    return (
+        <>
+            <input {...props} list={listId} autoComplete="off" />
+            <datalist id={listId}>
+                {options.map(o => <option key={o} value={o} />)}
+            </datalist>
+        </>
+    )
+}
+
+// Built-in suggestions plus values already saved on other entries, de-duplicated.
+function mergeSuggestions(base, used) {
+    const seen = new Set()
+    return [...used, ...base].filter(v => {
+        const t = (v || '').trim()
+        if (!t || seen.has(t.toLowerCase())) return false
+        seen.add(t.toLowerCase())
+        return true
+    })
+}
+
+function EduForm({ initial, onSave, onCancel, known = [] }) {
+    const institutionOptions = mergeSuggestions(INSTITUTION_SUGGESTIONS, known.map(k => k.institution))
+    const degreeOptions = mergeSuggestions(DEGREE_SUGGESTIONS, known.map(k => k.degree))
     const [form, setForm] = useState({
         ...emptyEdu,
         ...initial,
@@ -688,10 +731,10 @@ function EduForm({ initial, onSave, onCancel }) {
     }
 
     return (
-        <form onSubmit={submit} className="rounded-lg border border-violet-200 bg-violet-50 p-4 dark:border-violet-800 dark:bg-violet-950">
+        <form onSubmit={submit} className="rounded-lg border border-accent-200 bg-accent-50 p-4 dark:border-accent-800 dark:bg-accent-950">
             <div className="grid gap-3 sm:grid-cols-2">
-                <Field label="Institution *"><input className={inputCls} value={form.institution} onChange={e => set('institution', e.target.value)} required placeholder="e.g. University of Technology" /></Field>
-                <Field label="Degree"><input className={inputCls} value={form.degree} onChange={e => set('degree', e.target.value)} placeholder="e.g. Bachelor of Science" /></Field>
+                <Field label="Institution *"><SuggestInput options={institutionOptions} className={inputCls} value={form.institution} onChange={e => set('institution', e.target.value)} required placeholder="e.g. University of Technology" /></Field>
+                <Field label="Degree"><SuggestInput options={degreeOptions} className={inputCls} value={form.degree} onChange={e => set('degree', e.target.value)} placeholder="e.g. Bachelor of Science" /></Field>
                 <Field label="Field of Study"><input className={inputCls} value={form.field_of_study} onChange={e => set('field_of_study', e.target.value)} placeholder="e.g. Computer Science" /></Field>
                 <Field label="GPA"><input className={inputCls} value={form.gpa} onChange={e => set('gpa', e.target.value)} placeholder="e.g. 3.8 / 4.0" /></Field>
                 <Field label="Start Date">
@@ -700,7 +743,7 @@ function EduForm({ initial, onSave, onCancel }) {
                 <Field label="End Date (blank = Present)">
                     <input className={inputCls} type="date" value={form.end_date} onChange={e => set('end_date', e.target.value)} />
                     {form.end_date && (
-                        <button type="button" onClick={() => set('end_date', '')} className="mt-1 text-xs text-gray-400 hover:text-red-500">✕ Clear (set to Present)</button>
+                        <button type="button" onClick={() => set('end_date', '')} className="mt-1 text-xs text-gray-500 hover:text-red-500">✕ Clear (set to Present)</button>
                     )}
                 </Field>
                 <div className="sm:col-span-2">
@@ -765,7 +808,7 @@ function EducationTab() {
             <div className="flex items-center gap-3">
                 {!adding && <button className={btnPrimary} onClick={() => setAdding(true)}>+ Add Education</button>}
             </div>
-            {adding && <EduForm initial={emptyEdu} onSave={handleAdd} onCancel={() => setAdding(false)} />}
+            {adding && <EduForm known={items} initial={emptyEdu} onSave={handleAdd} onCancel={() => setAdding(false)} />}
             <div className="space-y-3">
                 {items.map((item, i) => (
                     <div
@@ -775,22 +818,22 @@ function EducationTab() {
                         onDragOver={e => handleDragOver(e, i)}
                         onDragEnd={handleDragEnd}
                         onDrop={() => handleDrop(i)}
-                        className={`rounded-lg border bg-white p-4 dark:bg-gray-800 transition-colors ${dragOver === i ? 'border-violet-400' : 'border-gray-200 dark:border-gray-700'}`}
+                        className={`rounded-lg border bg-white p-4 dark:bg-gray-800 transition-colors ${dragOver === i ? 'border-accent-400' : 'border-gray-200 dark:border-gray-700'}`}
                     >
                         {editId === item.id ? (
-                            <EduForm initial={item} onSave={p => handleUpdate(item.id, p)} onCancel={() => setEditId(null)} />
+                            <EduForm known={items} initial={item} onSave={p => handleUpdate(item.id, p)} onCancel={() => setEditId(null)} />
                         ) : (
                             <div className="flex items-start gap-3">
-                                <span className="mt-1 cursor-grab text-gray-300 dark:text-gray-600"><GripIcon /></span>
+                                <span className="mt-1 cursor-grab text-gray-400 dark:text-gray-600"><GripIcon /></span>
                                 <div className="flex-1 min-w-0">
                                     <p className="font-medium text-gray-900 dark:text-white">{item.institution}</p>
                                     {(item.degree || item.field_of_study) && (
-                                        <p className="text-sm text-violet-600 dark:text-violet-400">
+                                        <p className="text-sm text-accent-600 dark:text-accent-400">
                                             {[item.degree, item.field_of_study].filter(Boolean).join(' — ')}
                                         </p>
                                     )}
-                                    <p className="text-xs text-gray-400 mt-0.5">
-                                        {fmtMonth(item.start_date)} — {item.end_date ? fmtMonth(item.end_date) : 'Present'}
+                                    <p className="text-xs text-gray-500 mt-0.5">
+                                        {item.start_date ? `${fmtMonth(item.start_date)} — ${item.end_date ? fmtMonth(item.end_date) : 'Present'}` : item.end_date ? fmtMonth(item.end_date) : 'No dates'}
                                         {item.gpa && <span className="ml-2">· GPA {item.gpa}</span>}
                                     </p>
                                 </div>
@@ -802,7 +845,150 @@ function EducationTab() {
                         )}
                     </div>
                 ))}
-                {items.length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400">No education entries yet.</p>}
+                {items.length === 0 && <p className="text-sm text-gray-600 dark:text-gray-400">No education entries yet.</p>}
+            </div>
+        </div>
+    )
+}
+
+// ─── Certification Tab ─────────────────────────────────────────────────────────
+
+const emptyCert = { title: '', issuer: '', issue_date: '', credential_url: '', description: '', order: 0 }
+
+function CertForm({ initial, onSave, onCancel }) {
+    const [form, setForm] = useState({ ...emptyCert, ...initial, issue_date: toDateInput(initial?.issue_date || '') })
+    const [file, setFile] = useState(null)
+    const [removeImage, setRemoveImage] = useState(false)
+    const [saving, setSaving] = useState(false)
+    const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
+    const preview = file ? URL.createObjectURL(file) : (!removeImage && initial?.image_url) || null
+
+    const submit = async (e) => {
+        e.preventDefault()
+        setSaving(true)
+        try {
+            const fd = new FormData()
+            fd.append('title', form.title)
+            fd.append('issuer', form.issuer || '')
+            fd.append('issue_date', fmtDate(form.issue_date))
+            fd.append('credential_url', form.credential_url || '')
+            fd.append('description', form.description || '')
+            if (file) fd.append('image', file)
+            if (removeImage && !file) fd.append('remove_image', '1')
+            await onSave(fd)
+        } finally { setSaving(false) }
+    }
+
+    return (
+        <form onSubmit={submit} className="rounded-lg border border-accent-200 bg-accent-50 p-4 dark:border-accent-800 dark:bg-accent-950">
+            <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="Title *"><input className={inputCls} value={form.title} onChange={e => set('title', e.target.value)} required placeholder="e.g. AWS Certified Developer" /></Field>
+                <Field label="Issuer"><input className={inputCls} value={form.issuer} onChange={e => set('issuer', e.target.value)} placeholder="e.g. Amazon Web Services" /></Field>
+                <Field label="Issue Date"><input className={inputCls} type="date" value={form.issue_date} onChange={e => set('issue_date', e.target.value)} /></Field>
+                <Field label="Credential URL"><input className={inputCls} type="url" value={form.credential_url} onChange={e => set('credential_url', e.target.value)} placeholder="https://…" /></Field>
+                <div className="sm:col-span-2">
+                    <Field label="Image (optional, max 5MB)">
+                        <input type="file" accept="image/*" className={inputCls} onChange={e => { setFile(e.target.files?.[0] || null); setRemoveImage(false) }} />
+                        {preview && (
+                            <div className="mt-2 flex items-end gap-3">
+                                <img src={preview} alt="" className="h-28 rounded-md border border-gray-300 object-contain dark:border-gray-600" />
+                                <button type="button" onClick={() => { setFile(null); setRemoveImage(true) }} className="text-xs text-gray-500 hover:text-red-500">✕ Remove image</button>
+                            </div>
+                        )}
+                    </Field>
+                </div>
+                <div className="sm:col-span-2">
+                    <Field label="Text / Notes">
+                        <RichEditor value={form.description} onChange={v => set('description', v)} placeholder="Details about this certification…" />
+                    </Field>
+                </div>
+            </div>
+            <div className="mt-3 flex gap-2">
+                <button type="submit" className={btnPrimary} disabled={saving}>{saving ? 'Saving…' : 'Save'}</button>
+                <button type="button" className={btnSecondary} onClick={onCancel}>Cancel</button>
+            </div>
+        </form>
+    )
+}
+
+function CertificationTab() {
+    const toast = useToast()
+    const [items, setItems] = useState([])
+    const [adding, setAdding] = useState(false)
+    const [editId, setEditId] = useState(null)
+    const dragIdx = useRef(null)
+    const [dragOver, setDragOver] = useState(null)
+
+    const load = () => api.get('/portfolio').then(r => setItems(r.data.certifications || []))
+    useEffect(() => { load() }, [])
+
+    const handleAdd = async (fd) => {
+        try { await api.post('/portfolio/certifications', fd); setAdding(false); load(); toast({ message: 'Certification added.' }) }
+        catch { toast({ message: 'Failed to add certification.', type: 'error' }) }
+    }
+    const handleUpdate = async (id, fd) => {
+        fd.append('_method', 'PUT') // PHP can't parse multipart on PUT
+        try { await api.post(`/portfolio/certifications/${id}`, fd); setEditId(null); load(); toast({ message: 'Certification updated.' }) }
+        catch { toast({ message: 'Failed to update certification.', type: 'error' }) }
+    }
+    const handleDelete = async (id) => {
+        if (!confirm('Delete this certification?')) return
+        try { await api.delete(`/portfolio/certifications/${id}`); load(); toast({ message: 'Certification deleted.' }) }
+        catch { toast({ message: 'Failed to delete certification.', type: 'error' }) }
+    }
+
+    const handleDrop = async (i) => {
+        const from = dragIdx.current
+        setDragOver(null); dragIdx.current = null
+        if (from === null || from === i) return
+        const next = [...items]
+        const [moved] = next.splice(from, 1)
+        next.splice(i, 0, moved)
+        const reordered = next.map((item, idx) => ({ ...item, order: idx }))
+        setItems(reordered)
+        try {
+            await api.post('/portfolio/certifications/reorder', { items: reordered.map(({ id, order }) => ({ id, order })) })
+            toast({ message: 'Order saved.' })
+        } catch { toast({ message: 'Failed to save order.', type: 'error' }); load() }
+    }
+
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center gap-3">
+                {!adding && <button className={btnPrimary} onClick={() => setAdding(true)}>+ Add Certification</button>}
+            </div>
+            {adding && <CertForm initial={emptyCert} onSave={handleAdd} onCancel={() => setAdding(false)} />}
+            <div className="space-y-3">
+                {items.map((item, i) => (
+                    <div
+                        key={item.id}
+                        draggable
+                        onDragStart={() => { dragIdx.current = i }}
+                        onDragOver={e => { e.preventDefault(); setDragOver(i) }}
+                        onDragEnd={() => { setDragOver(null); dragIdx.current = null }}
+                        onDrop={() => handleDrop(i)}
+                        className={`rounded-lg border bg-white p-4 dark:bg-gray-800 transition-colors ${dragOver === i ? 'border-accent-400' : 'border-gray-200 dark:border-gray-700'}`}
+                    >
+                        {editId === item.id ? (
+                            <CertForm initial={item} onSave={fd => handleUpdate(item.id, fd)} onCancel={() => setEditId(null)} />
+                        ) : (
+                            <div className="flex items-start gap-3">
+                                <span className="mt-1 cursor-grab text-gray-400 dark:text-gray-600"><GripIcon /></span>
+                                {item.image_url && <img src={item.image_url} alt="" className="h-16 w-24 shrink-0 rounded border border-gray-200 object-cover dark:border-gray-700" />}
+                                <div className="flex-1 min-w-0">
+                                    <p className="font-medium text-gray-900 dark:text-white">{item.title}</p>
+                                    {item.issuer && <p className="text-sm text-accent-600 dark:text-accent-400">{item.issuer}</p>}
+                                    {item.issue_date && <p className="text-xs text-gray-500 mt-0.5">{fmtDate(item.issue_date)}</p>}
+                                </div>
+                                <div className="flex gap-2 shrink-0">
+                                    <button className={btnSecondary} onClick={() => setEditId(item.id)}>Edit</button>
+                                    <button className="rounded-md bg-red-50 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400" onClick={() => handleDelete(item.id)}>Delete</button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                ))}
+                {items.length === 0 && <p className="text-sm text-gray-600 dark:text-gray-400">No certifications yet.</p>}
             </div>
         </div>
     )
@@ -811,46 +997,57 @@ function EducationTab() {
 // ─── Dashboard ─────────────────────────────────────────────────────────────────
 
 const TABS = [
-    { id: 'profile', label: 'Profile', component: ProfileTab },
-    { id: 'projects', label: 'Projects', component: ProjectsTab },
-    { id: 'skills', label: 'Skills', component: SkillsTab },
-    { id: 'experience', label: 'Experience', component: ExperienceTab },
-    { id: 'education', label: 'Education', component: EducationTab },
+    { id: 'profile', label: 'Profile', hint: 'Your name, headline, bio and contact details.', component: ProfileTab },
+    { id: 'projects', label: 'Projects', hint: 'Work you want to show off, with links and tech stack.', component: ProjectsTab },
+    { id: 'skills', label: 'Skills', hint: 'Drag to reorder how skills appear on your page.', component: SkillsTab },
+    { id: 'experience', label: 'Experience', hint: 'Roles, dates and key achievements.', component: ExperienceTab },
+    { id: 'education', label: 'Education', hint: 'Schools, degrees and coursework.', component: EducationTab },
+    { id: 'certification', label: 'Certification', hint: 'Certificates as an image, text, or both.', component: CertificationTab },
 ]
 
 export default function Dashboard() {
     const [activeTab, setActiveTab] = useState('profile')
-    const ActiveComponent = TABS.find(t => t.id === activeTab)?.component
+    const active = TABS.find(t => t.id === activeTab)
+    const ActiveComponent = active?.component
 
     return (
         <AuthenticatedLayout header={
-            <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">Content Manager</h2>
+            <h2 className="text-xl font-semibold leading-tight">Content Manager</h2>
         }>
             <div className="py-8">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    {/* Tab bar */}
-                    <div className="mb-6 border-b border-gray-200 dark:border-gray-700">
-                        <nav className="-mb-px flex gap-1">
-                            {TABS.map(tab => (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    className={`px-5 py-3 text-sm font-medium border-b-2 transition ${
-                                        activeTab === tab.id
-                                            ? 'border-violet-600 text-violet-600 dark:border-violet-400 dark:text-violet-400'
-                                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200'
-                                    }`}
-                                >
-                                    {tab.label}
-                                </button>
-                            ))}
-                        </nav>
-                    </div>
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-10">
+                    {/* Tabs: left rail on desktop, scrollable strip on mobile */}
+                    <nav aria-label="Content sections" className="mb-6 lg:mb-0">
+                        <ul className="flex gap-1 overflow-x-auto pb-1 lg:sticky lg:top-24 lg:flex-col lg:overflow-visible lg:pb-0">
+                            {TABS.map(tab => {
+                                const on = activeTab === tab.id
+                                return (
+                                    <li key={tab.id} className="shrink-0">
+                                        <button
+                                            onClick={() => setActiveTab(tab.id)}
+                                            aria-current={on ? 'page' : undefined}
+                                            className={`relative w-full whitespace-nowrap rounded-lg px-4 py-2.5 text-left text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-accent-500 ${
+                                                on
+                                                    ? 'bg-accent-500/10 text-accent-600 dark:text-accent-400 lg:before:absolute lg:before:inset-y-2 lg:before:left-0 lg:before:w-0.5 lg:before:rounded-full lg:before:bg-accent-500'
+                                                    : 'text-gray-600 hover:bg-gray-200/60 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-100'
+                                            }`}
+                                        >
+                                            {tab.label}
+                                        </button>
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    </nav>
 
                     {/* Tab content */}
-                    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                        {ActiveComponent && <ActiveComponent />}
-                    </div>
+                    <section className="min-w-0 rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/10 dark:bg-gray-800/60 sm:p-7">
+                        <header className="mb-6 border-b border-gray-200 pb-4 dark:border-white/10">
+                            <h3 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{active?.label}</h3>
+                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{active?.hint}</p>
+                        </header>
+                        {ActiveComponent && <ActiveComponent key={activeTab} />}
+                    </section>
                 </div>
             </div>
         </AuthenticatedLayout>

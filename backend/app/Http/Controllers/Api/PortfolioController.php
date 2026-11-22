@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Certification;
 use App\Models\Education;
 use App\Models\Experience;
 use App\Models\PortfolioProfile;
@@ -22,6 +23,7 @@ class PortfolioController extends Controller
             'skills' => Skill::orderBy('order')->get(),
             'experiences' => Experience::orderBy('order')->get(),
             'educations' => Education::orderBy('order')->get(),
+            'certifications' => Certification::orderBy('order')->get(),
         ]);
     }
 
