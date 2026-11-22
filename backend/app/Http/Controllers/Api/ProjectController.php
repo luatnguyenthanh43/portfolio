@@ -10,11 +10,6 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    public function index(): JsonResponse
-    {
-        return response()->json(Project::orderBy('order')->get());
-    }
-
     private function rules(): array
     {
         return [

@@ -10,11 +10,6 @@ use Illuminate\Http\Request;
 
 class EducationController extends Controller
 {
-    public function index(): JsonResponse
-    {
-        return response()->json(Education::orderBy('order')->get());
-    }
-
     public function store(Request $request): JsonResponse
     {
         $data = $this->validated($request);

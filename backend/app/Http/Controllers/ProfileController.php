@@ -36,7 +36,7 @@ class ProfileController extends Controller
         $request->validate(['password' => ['required', 'current_password']]);
 
         $user = $request->user();
-        Auth::logout();
+        Auth::guard('web')->logout();
         $user->delete();
 
         $request->session()->invalidate();

@@ -4,16 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Experience;
+use App\Support\HtmlSanitizer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ExperienceController extends Controller
 {
-    public function index(): JsonResponse
-    {
-        return response()->json(Experience::orderBy('order')->get());
-    }
-
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -30,6 +26,8 @@ class ExperienceController extends Controller
             'key_achievements.*' => 'string',
             'order' => 'integer|min:0',
         ]);
+
+        $data = $this->sanitize($data);
 
         return response()->json(Experience::create($data), 201);
     }
@@ -51,7 +49,7 @@ class ExperienceController extends Controller
             'order' => 'integer|min:0',
         ]);
 
-        $experience->update($data);
+        $experience->update($this->sanitize($data));
 
         return response()->json($experience);
     }
@@ -76,5 +74,14 @@ class ExperienceController extends Controller
         }
 
         return response()->json(['ok' => true]);
+    }
+
+    private function sanitize(array $data): array
+    {
+        if (array_key_exists('description', $data)) {
+            $data['description'] = HtmlSanitizer::purify($data['description'] ?? '');
+        }
+
+        return $data;
     }
 }

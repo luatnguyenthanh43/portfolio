@@ -9,11 +9,6 @@ use Illuminate\Http\Request;
 
 class SkillController extends Controller
 {
-    public function index(): JsonResponse
-    {
-        return response()->json(Skill::orderBy('order')->get());
-    }
-
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -47,7 +42,7 @@ class SkillController extends Controller
 
     public function reorder(Request $request): JsonResponse
     {
-        $items = $request->validate(['items' => 'required|array', 'items.*.id' => 'required|integer', 'items.*.order' => 'required|integer'])['items'];
+        $items = $request->validate(['items' => 'required|array', 'items.*.id' => 'required|integer|exists:skills,id', 'items.*.order' => 'required|integer|min:0'])['items'];
 
         foreach ($items as $item) {
             Skill::where('id', $item['id'])->update(['order' => $item['order']]);
