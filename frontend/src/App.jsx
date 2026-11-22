@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { AuthProvider, useAuth } from '@/contexts/AuthContext'
+import { AuthProvider } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import { ToastProvider } from '@/contexts/ToastContext'
 import Welcome from '@/Pages/Welcome'
 import Dashboard from '@/Pages/Dashboard'

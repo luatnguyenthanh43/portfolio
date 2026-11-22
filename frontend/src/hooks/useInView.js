@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 export default function useInView(options = {}) {
     const ref = useRef(null)
+    const optsRef = useRef(options)
     const [inView, setInView] = useState(false)
 
     useEffect(() => {
@@ -12,7 +13,7 @@ export default function useInView(options = {}) {
                 setInView(true)
                 observer.disconnect()
             }
-        }, { threshold: 0.12, ...options })
+        }, { threshold: 0.12, ...optsRef.current })
         observer.observe(el)
         return () => observer.disconnect()
     }, [])

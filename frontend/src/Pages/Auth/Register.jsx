@@ -3,7 +3,7 @@ import InputLabel from '@/Components/InputLabel'
 import PrimaryButton from '@/Components/PrimaryButton'
 import TextInput from '@/Components/TextInput'
 import GuestLayout from '@/Layouts/GuestLayout'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 

@@ -40,7 +40,7 @@ export default function RichEditor({ value, onChange, placeholder = 'Write somet
         if (editor.getHTML() !== value) {
             editor.commands.setContent(value || '', false)
         }
-    }, [value])
+    }, [value, editor])
 
     const setLink = () => {
         const url = window.prompt('URL', editor.getAttributes('link').href || 'https://')

@@ -1,6 +1,6 @@
 import PrimaryButton from '@/Components/PrimaryButton'
 import GuestLayout from '@/Layouts/GuestLayout'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import api from '@/lib/api'
 import { useState } from 'react'
 

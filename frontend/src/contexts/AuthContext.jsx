@@ -1,7 +1,6 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import api, { getCsrfCookie } from '@/lib/api'
-
-const AuthContext = createContext(null)
+import { AuthContext } from '@/hooks/useAuth'
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(undefined)
@@ -35,5 +34,3 @@ export function AuthProvider({ children }) {
         </AuthContext.Provider>
     )
 }
-
-export const useAuth = () => useContext(AuthContext)

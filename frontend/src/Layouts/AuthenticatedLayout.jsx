@@ -1,6 +1,6 @@
 import Dropdown from '@/Components/Dropdown'
 import ThemeToggle from '@/Components/ThemeToggle'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/hooks/useAuth'
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 

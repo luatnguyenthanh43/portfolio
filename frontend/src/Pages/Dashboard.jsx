@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout'
 import RichEditor from '@/Components/RichEditor'
-import { useToast } from '@/contexts/ToastContext'
+import { useToast } from '@/hooks/useToast'
 import api from '@/lib/api'
 import { useEffect, useRef, useState } from 'react'
 
@@ -64,15 +64,16 @@ function Field({ label, children }) {
 
 // ─── Profile Tab ───────────────────────────────────────────────────────────────
 
+const emptyProfile = { name: '', title: '', bio: '', email: '', phone: '', location: '', github_url: '', linkedin_url: '' }
+
 function ProfileTab() {
     const toast = useToast()
-    const empty = { name: '', title: '', bio: '', email: '', phone: '', location: '', github_url: '', linkedin_url: '' }
-    const [form, setForm] = useState(empty)
+    const [form, setForm] = useState(emptyProfile)
     const [saving, setSaving] = useState(false)
 
     useEffect(() => {
         api.get('/portfolio').then(r => {
-            if (r.data.profile) setForm({ ...empty, ...r.data.profile })
+            if (r.data.profile) setForm({ ...emptyProfile, ...r.data.profile })
         })
     }, [])
 

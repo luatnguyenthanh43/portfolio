@@ -1,6 +1,5 @@
-import { createContext, useCallback, useContext, useState } from 'react'
-
-const ToastContext = createContext(null)
+import { useCallback, useState } from 'react'
+import { ToastContext } from '@/hooks/useToast'
 
 let nextId = 0
 
@@ -24,8 +23,6 @@ export function ToastProvider({ children }) {
         </ToastContext.Provider>
     )
 }
-
-export const useToast = () => useContext(ToastContext)
 
 const icons = {
     success: (
