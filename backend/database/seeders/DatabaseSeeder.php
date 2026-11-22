@@ -177,7 +177,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $educations = [
-            ['institution' => 'HCMC Open University', 'degree' => "Bachelor's Degree", 'field_of_study' => 'International Business', 'start_date' => 'Jan 2024', 'end_date' => 'Jun 2026 (expected)', 'order' => 0],
+            ['institution' => 'HCMC Open University', 'degree' => "Bachelor's Degree", 'field_of_study' => 'International Business', 'start_date' => 'Jan 2024', 'end_date' => 'Jun 2026', 'order' => 0],
             ['institution' => 'HCMC Open University', 'degree' => "Bachelor's Degree", 'field_of_study' => 'Management Information Systems', 'start_date' => 'Sep 2017', 'end_date' => 'Jul 2022', 'order' => 1],
         ];
         foreach ($educations as $education) {
