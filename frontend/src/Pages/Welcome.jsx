@@ -147,17 +147,17 @@ function Projects({ projects }) {
                 {sorted.map(p => (
                     <Row key={p.id} className={`project py-6 ${GRID}`}>
                         <div className={metaCls} style={{ color: 'var(--w-muted)' }}>
-                            {p.company && <div className="font-display text-xl font-bold" style={{ color: 'var(--w-heading)' }}>{p.company}</div>}
-                            {p.role && <div>{p.role}</div>}
+                            {p.company && <div className="font-medium" style={{ color: 'var(--w-heading)' }}>{p.company}</div>}
+                            {p.role && <div className="text-sm">{p.role}</div>}
                         </div>
 
                         <div className="min-w-0">
-                            <h3 className={`project-title font-display font-bold tracking-tight text-[color:var(--w-heading)] ${p.featured ? 'text-4xl' : 'text-3xl'}`}>
+                            <h3 className={`project-title font-display font-bold tracking-tight text-[color:var(--w-heading)] ${p.featured ? 'text-3xl' : 'text-2xl'}`}>
                                 {p.demo_url ? <a href={p.demo_url} target="_blank" rel="noreferrer">{p.title}</a> : p.title}
                             </h3>
 
                             {p.summary && (
-                                <p className="mt-3 max-w-[38rem] text-xl font-medium leading-snug" style={{ color: 'var(--w-heading)' }}>{p.summary}</p>
+                                <p className="mt-2 max-w-[38rem] text-lg leading-snug" style={{ color: 'var(--w-accent)' }}>{p.summary}</p>
                             )}
 
                             {p.image_url && (
@@ -166,7 +166,7 @@ function Projects({ projects }) {
 
                             {p.description && (
                                 <div
-                                    className="prose-bio font-serif-body mt-4 max-w-[38rem] text-xl leading-[1.6]"
+                                    className="prose-bio mt-4 max-w-[38rem] text-base leading-relaxed"
                                     style={{ color: 'var(--w-text)' }}
                                     dangerouslySetInnerHTML={{ __html: p.description }}
                                 />
@@ -175,15 +175,15 @@ function Projects({ projects }) {
                             {p.tech_stack?.length > 0 && (
                                 <ul className="mt-4 flex flex-wrap gap-2 p-0" style={{ listStyle: 'none' }}>
                                     {p.tech_stack.map(t => (
-                                        <li key={t} className="rounded-full px-3 py-1 text-sm" style={{ color: 'var(--w-text)', border: '1px solid var(--w-line)' }}>{t}</li>
+                                        <li key={t} className="rounded-md px-2.5 py-1 font-mono text-xs" style={{ color: 'var(--w-muted)', border: '1px solid var(--w-line)' }}>{t}</li>
                                     ))}
                                 </ul>
                             )}
 
                             {(p.demo_url || p.github_url) && (
                                 <div className="mt-5 flex flex-wrap gap-x-7 gap-y-2">
-                                    {p.demo_url && <a href={p.demo_url} target="_blank" rel="noreferrer" className="text-link text-base font-medium">Live demo</a>}
-                                    {p.github_url && <a href={p.github_url} target="_blank" rel="noreferrer" className="text-link text-base font-medium">Source code</a>}
+                                    {p.demo_url && <a href={p.demo_url} target="_blank" rel="noreferrer" className="text-link text-base font-medium">Live demo ↗</a>}
+                                    {p.github_url && <a href={p.github_url} target="_blank" rel="noreferrer" className="text-link text-base font-medium">Source code ↗</a>}
                                 </div>
                             )}
                         </div>
@@ -427,7 +427,7 @@ export default function Welcome() {
                     <div className="flex h-16 items-center justify-between">
                         {/* Logo */}
                         <button onClick={() => scrollTo('hero')} className="font-display text-lg font-bold tracking-tight" style={{ color: 'var(--w-heading)' }}>
-                            {portfolio?.profile?.name || 'Portfolio'}
+                            Portfolio
                         </button>
 
                         {/* Desktop nav links */}

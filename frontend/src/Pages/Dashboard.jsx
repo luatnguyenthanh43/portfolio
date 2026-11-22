@@ -64,6 +64,12 @@ function Field({ label, children }) {
 
 // ─── Profile Tab ───────────────────────────────────────────────────────────────
 
+// Merge API data over defaults, ignoring null/undefined so inputs stay controlled.
+const withDefaults = (defaults, data) => ({
+    ...defaults,
+    ...Object.fromEntries(Object.entries(data ?? {}).filter(([, v]) => v != null)),
+})
+
 const emptyProfile = { name: '', title: '', bio: '', email: '', phone: '', location: '', github_url: '', linkedin_url: '' }
 
 function ProfileTab() {
@@ -73,7 +79,7 @@ function ProfileTab() {
 
     useEffect(() => {
         api.get('/portfolio').then(r => {
-            if (r.data.profile) setForm({ ...emptyProfile, ...r.data.profile })
+            if (r.data.profile) setForm(withDefaults(emptyProfile, r.data.profile))
         })
     }, [])
 
@@ -117,8 +123,7 @@ const emptyProject = { title: '', company: '', role: '', summary: '', descriptio
 
 function ProjectForm({ initial, onSave, onCancel }) {
     const [form, setForm] = useState({
-        ...emptyProject,
-        ...initial,
+        ...withDefaults(emptyProject, initial),
         tech_stack: Array.isArray(initial?.tech_stack) ? initial.tech_stack : [],
     })
     const [saving, setSaving] = useState(false)
@@ -258,7 +263,7 @@ function ProjectsTab() {
 const emptySkill = { name: '', category: '', order: 0 }
 
 function SkillForm({ initial, onSave, onCancel }) {
-    const [form, setForm] = useState({ ...emptySkill, ...initial })
+    const [form, setForm] = useState(withDefaults(emptySkill, initial))
     const [saving, setSaving] = useState(false)
     const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -446,8 +451,7 @@ function TechPicker({ selected, onChange }) {
 
 function ExpForm({ initial, onSave, onCancel }) {
     const [form, setForm] = useState({
-        ...emptyExp,
-        ...initial,
+        ...withDefaults(emptyExp, initial),
         start_date: toMonthInput(initial?.start_date || ''),
         end_date: toMonthInput(initial?.end_date || ''),
         tech_stack: initial?.tech_stack || [],
@@ -714,8 +718,7 @@ function EduForm({ initial, onSave, onCancel, known = [] }) {
     const institutionOptions = mergeSuggestions(INSTITUTION_SUGGESTIONS, known.map(k => k.institution))
     const degreeOptions = mergeSuggestions(DEGREE_SUGGESTIONS, known.map(k => k.degree))
     const [form, setForm] = useState({
-        ...emptyEdu,
-        ...initial,
+        ...withDefaults(emptyEdu, initial),
         start_date: toMonthInput(initial?.start_date || ''),
         end_date: toMonthInput(initial?.end_date || ''),
     })
@@ -856,7 +859,7 @@ function EducationTab() {
 const emptyCert = { title: '', issuer: '', issue_date: '', credential_url: '', description: '', order: 0 }
 
 function CertForm({ initial, onSave, onCancel }) {
-    const [form, setForm] = useState({ ...emptyCert, ...initial, issue_date: toDateInput(initial?.issue_date || '') })
+    const [form, setForm] = useState({ ...withDefaults(emptyCert, initial), issue_date: toDateInput(initial?.issue_date || '') })
     const [file, setFile] = useState(null)
     const [removeImage, setRemoveImage] = useState(false)
     const [saving, setSaving] = useState(false)

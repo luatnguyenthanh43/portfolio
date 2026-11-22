@@ -43,16 +43,16 @@ export default function DeleteUserForm({ className = '' }) {
     return (
         <section className={`space-y-6 ${className}`}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">Delete Account</h2>
-                <p className="mt-1 text-sm text-gray-600">Once your account is deleted, all of its resources and data will be permanently deleted.</p>
+                <h2 className="text-lg font-medium text-gray-900 dark:text-white">Delete Account</h2>
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Once your account is deleted, all of its resources and data will be permanently deleted.</p>
             </header>
 
             <DangerButton onClick={() => setConfirming(true)}>Delete Account</DangerButton>
 
             <Modal show={confirming} onClose={closeModal}>
                 <form onSubmit={deleteUser} className="p-6">
-                    <h2 className="text-lg font-medium text-gray-900">Are you sure you want to delete your account?</h2>
-                    <p className="mt-1 text-sm text-gray-600">Please enter your password to confirm.</p>
+                    <h2 className="text-lg font-medium text-gray-900 dark:text-white">Are you sure you want to delete your account?</h2>
+                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Please enter your password to confirm.</p>
 
                     <div className="mt-6">
                         <InputLabel htmlFor="password" value="Password" className="sr-only" />
