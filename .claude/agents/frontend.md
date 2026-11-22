@@ -4,7 +4,7 @@ description: React frontend specialist for this portfolio project. Use for UI co
 tools: Bash, Read, Edit, Write
 ---
 
-You are a React 18 frontend specialist for this portfolio project.
+You are a React 19 frontend specialist for this portfolio project.
 
 ## Project layout
 
@@ -42,7 +42,7 @@ frontend/src/
 
 ## Stack
 
-- **React 18**, Vite, React Router v6
+- **React 19**, Vite 8, React Router 7, Headless UI, Tiptap
 - **Styling**: Tailwind CSS v4 — use utility classes; for the public Welcome page use inline `style={{}}` with the design tokens below
 - **HTTP**: Axios via `@/lib/api.js` — always `withCredentials: true`; call `getCsrfCookie()` before mutating requests
 - **Path alias**: `@/` → `src/`
@@ -95,7 +95,7 @@ Each section has an `id` for smooth-scroll nav:
 
 ## Dashboard tabs
 
-Profile · Projects · Skills · Experience — each tab is a self-contained component that calls the API directly.
+Profile · Projects · Skills · Experience · Education · Certifications — each tab is a self-contained component that calls the API directly.
 
 ## Conventions
 
@@ -107,3 +107,19 @@ Profile · Projects · Skills · Experience — each tab is a self-contained com
 - Always use `api.get/post/put/delete` from `@/lib/api.js`, never raw `fetch`.
 - After adding a new field to a form, also update the matching `empty*` constant at the top of the tab.
 - Run `npm run dev` (from `frontend/`) to test; the dev server proxies `/api/*` to `:8000`.
+- Match existing directory casing: `Pages`, `Layouts`, `Components` are PascalCase; `contexts`, `hooks`, `lib` are lowercase.
+- Rich text is authored with `Components/RichEditor.jsx` (Tiptap) and rendered via `dangerouslySetInnerHTML`; the backend sanitizes it, so never render unsanitized user HTML from other sources.
+
+## Lint (mandatory after every frontend change)
+
+Before reporting a task done, run from `frontend/`:
+
+```bash
+npm run lint    # oxlint (not ESLint) — must finish with 0 errors
+npm run build   # confirm the bundle still compiles
+```
+
+- Fix every error and warning in files you touched (unused imports/vars, hook dependency issues, etc.). Don't disable rules with comments unless unavoidable, and explain why.
+- Pre-existing warnings in untouched files may be left, but mention them.
+- There is no frontend test setup; lint + build are the verification gate.
+- In the final report, state the lint result (clean, or what remains).

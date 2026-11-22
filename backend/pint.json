@@ -1,0 +1,9 @@
+{
+    "preset": "psr12",
+    "exclude": ["bootstrap/cache", "storage"],
+    "rules": {
+        "new_with_parentheses": false,
+        "class_definition": false,
+        "braces_position": false
+    }
+}

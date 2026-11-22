@@ -539,6 +539,8 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
     );
 
     public static $classMap = array (
+        'App\\Http\\Controllers\\Api\\CertificationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/CertificationController.php',
+        'App\\Http\\Controllers\\Api\\EducationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/EducationController.php',
         'App\\Http\\Controllers\\Api\\ExperienceController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/ExperienceController.php',
         'App\\Http\\Controllers\\Api\\PortfolioController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/PortfolioController.php',
         'App\\Http\\Controllers\\Api\\ProjectController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/ProjectController.php',
@@ -556,12 +558,15 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         'App\\Http\\Controllers\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProfileController.php',
         'App\\Http\\Requests\\Auth\\LoginRequest' => __DIR__ . '/../..' . '/app/Http/Requests/Auth/LoginRequest.php',
         'App\\Http\\Requests\\ProfileUpdateRequest' => __DIR__ . '/../..' . '/app/Http/Requests/ProfileUpdateRequest.php',
+        'App\\Models\\Certification' => __DIR__ . '/../..' . '/app/Models/Certification.php',
+        'App\\Models\\Education' => __DIR__ . '/../..' . '/app/Models/Education.php',
         'App\\Models\\Experience' => __DIR__ . '/../..' . '/app/Models/Experience.php',
         'App\\Models\\PortfolioProfile' => __DIR__ . '/../..' . '/app/Models/PortfolioProfile.php',
         'App\\Models\\Project' => __DIR__ . '/../..' . '/app/Models/Project.php',
         'App\\Models\\Skill' => __DIR__ . '/../..' . '/app/Models/Skill.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
+        'App\\Support\\HtmlSanitizer' => __DIR__ . '/../..' . '/app/Support/HtmlSanitizer.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Brick\\Math\\BigDecimal' => __DIR__ . '/..' . '/brick/math/src/BigDecimal.php',
         'Brick\\Math\\BigInteger' => __DIR__ . '/..' . '/brick/math/src/BigInteger.php',
@@ -6973,6 +6978,7 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         'Tests\\Feature\\Auth\\PasswordUpdateTest' => __DIR__ . '/../..' . '/tests/Feature/Auth/PasswordUpdateTest.php',
         'Tests\\Feature\\Auth\\RegistrationTest' => __DIR__ . '/../..' . '/tests/Feature/Auth/RegistrationTest.php',
         'Tests\\Feature\\ExampleTest' => __DIR__ . '/../..' . '/tests/Feature/ExampleTest.php',
+        'Tests\\Feature\\PasswordResetEmailTest' => __DIR__ . '/../..' . '/tests/Feature/PasswordResetEmailTest.php',
         'Tests\\Feature\\ProfileTest' => __DIR__ . '/../..' . '/tests/Feature/ProfileTest.php',
         'Tests\\TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
         'Tests\\Unit\\ExampleTest' => __DIR__ . '/../..' . '/tests/Unit/ExampleTest.php',

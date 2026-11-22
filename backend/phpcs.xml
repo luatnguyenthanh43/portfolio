@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<ruleset name="Portfolio">
+    <description>PSR-12 for the Laravel backend</description>
+    <arg name="colors"/>
+    <arg value="p"/>
+    <file>app</file>
+    <file>routes</file>
+    <file>database</file>
+    <file>tests</file>
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>storage/*</exclude-pattern>
+    <exclude-pattern>bootstrap/cache/*</exclude-pattern>
+    <rule ref="PSR12"/>
+    <!-- Laravel tests use snake_case method names -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <!-- Pint (Laravel preset) removes spaces around "."; avoid fighting it -->
+    <rule ref="Squiz.Strings.ConcatenationSpacing">
+        <severity>0</severity>
+    </rule>
+</ruleset>

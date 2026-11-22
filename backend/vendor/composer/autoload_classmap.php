@@ -6,6 +6,8 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Http\\Controllers\\Api\\CertificationController' => $baseDir . '/app/Http/Controllers/Api/CertificationController.php',
+    'App\\Http\\Controllers\\Api\\EducationController' => $baseDir . '/app/Http/Controllers/Api/EducationController.php',
     'App\\Http\\Controllers\\Api\\ExperienceController' => $baseDir . '/app/Http/Controllers/Api/ExperienceController.php',
     'App\\Http\\Controllers\\Api\\PortfolioController' => $baseDir . '/app/Http/Controllers/Api/PortfolioController.php',
     'App\\Http\\Controllers\\Api\\ProjectController' => $baseDir . '/app/Http/Controllers/Api/ProjectController.php',
@@ -23,12 +25,15 @@ return array(
     'App\\Http\\Controllers\\ProfileController' => $baseDir . '/app/Http/Controllers/ProfileController.php',
     'App\\Http\\Requests\\Auth\\LoginRequest' => $baseDir . '/app/Http/Requests/Auth/LoginRequest.php',
     'App\\Http\\Requests\\ProfileUpdateRequest' => $baseDir . '/app/Http/Requests/ProfileUpdateRequest.php',
+    'App\\Models\\Certification' => $baseDir . '/app/Models/Certification.php',
+    'App\\Models\\Education' => $baseDir . '/app/Models/Education.php',
     'App\\Models\\Experience' => $baseDir . '/app/Models/Experience.php',
     'App\\Models\\PortfolioProfile' => $baseDir . '/app/Models/PortfolioProfile.php',
     'App\\Models\\Project' => $baseDir . '/app/Models/Project.php',
     'App\\Models\\Skill' => $baseDir . '/app/Models/Skill.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
+    'App\\Support\\HtmlSanitizer' => $baseDir . '/app/Support/HtmlSanitizer.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Brick\\Math\\BigDecimal' => $vendorDir . '/brick/math/src/BigDecimal.php',
     'Brick\\Math\\BigInteger' => $vendorDir . '/brick/math/src/BigInteger.php',
@@ -6440,6 +6445,7 @@ return array(
     'Tests\\Feature\\Auth\\PasswordUpdateTest' => $baseDir . '/tests/Feature/Auth/PasswordUpdateTest.php',
     'Tests\\Feature\\Auth\\RegistrationTest' => $baseDir . '/tests/Feature/Auth/RegistrationTest.php',
     'Tests\\Feature\\ExampleTest' => $baseDir . '/tests/Feature/ExampleTest.php',
+    'Tests\\Feature\\PasswordResetEmailTest' => $baseDir . '/tests/Feature/PasswordResetEmailTest.php',
     'Tests\\Feature\\ProfileTest' => $baseDir . '/tests/Feature/ProfileTest.php',
     'Tests\\TestCase' => $baseDir . '/tests/TestCase.php',
     'Tests\\Unit\\ExampleTest' => $baseDir . '/tests/Unit/ExampleTest.php',
