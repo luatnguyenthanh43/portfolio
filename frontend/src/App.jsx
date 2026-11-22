@@ -1,16 +1,17 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { useAuth } from '@/hooks/useAuth'
 import { ToastProvider } from '@/contexts/ToastContext'
 import Welcome from '@/Pages/Welcome'
-import Dashboard from '@/Pages/Dashboard'
-import Login from '@/Pages/Auth/Login'
-import Register from '@/Pages/Auth/Register'
-import ForgotPassword from '@/Pages/Auth/ForgotPassword'
-import ResetPassword from '@/Pages/Auth/ResetPassword'
-import VerifyEmail from '@/Pages/Auth/VerifyEmail'
-import ConfirmPassword from '@/Pages/Auth/ConfirmPassword'
-import Profile from '@/Pages/Profile/Edit'
+const Dashboard = lazy(() => import('@/Pages/Dashboard'))
+const Login = lazy(() => import('@/Pages/Auth/Login'))
+const Register = lazy(() => import('@/Pages/Auth/Register'))
+const ForgotPassword = lazy(() => import('@/Pages/Auth/ForgotPassword'))
+const ResetPassword = lazy(() => import('@/Pages/Auth/ResetPassword'))
+const VerifyEmail = lazy(() => import('@/Pages/Auth/VerifyEmail'))
+const ConfirmPassword = lazy(() => import('@/Pages/Auth/ConfirmPassword'))
+const Profile = lazy(() => import('@/Pages/Profile/Edit'))
 
 function PrivateRoute({ children }) {
     const { user } = useAuth()
@@ -26,6 +27,7 @@ function GuestRoute({ children }) {
 
 function AppRoutes() {
     return (
+        <Suspense fallback={null}>
         <Routes>
             <Route path="/" element={<Welcome />} />
             <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
@@ -38,6 +40,7 @@ function AppRoutes() {
             <Route path="/admin" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
         </Routes>
+        </Suspense>
     )
 }
 
